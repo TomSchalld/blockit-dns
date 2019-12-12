@@ -8,12 +8,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.2.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
     <groupId>com.schalldach.dns</groupId>
     <artifactId>blockit</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -23,6 +17,18 @@
     <properties>
         <java.version>1.8</java.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-parent</artifactId>
+                <version>2.2.2.RELEASE</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -36,6 +42,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
         <dependency>
@@ -71,6 +81,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>
