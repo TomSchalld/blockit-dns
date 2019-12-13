@@ -12,13 +12,23 @@ import com.schalldach.dns.blockit.blocklist.data.BlocklistRepo;
 import com.schalldach.dns.blockit.blocklist.dto.BlocklistCreateDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by @author Thomas Schalldach on 12/12/2019 software@thomas-schalldach.de.
@@ -36,6 +46,15 @@ public class BlocklistServiceImpl implements BlocklistService {
 
     @Autowired
     private BlocklistParser blocklistParser;
+
+    @Value("${blocklist.export.format}")
+    private SupportedExportFormat exportFormat;
+
+    @Value("${blocklist.export.folder}")
+    private Path exportPath;
+
+    @Value("${blocklist.export.filename}")
+    private String filename;
 
 
     @Override
@@ -59,5 +78,30 @@ public class BlocklistServiceImpl implements BlocklistService {
         entity.setActive(dto.isActive());
         entity.setDataSet(new HashSet<>(blocklistEntries));
         blocklistRepo.save(entity);
+    }
+
+    @Async("asyncWorker")
+    @Override
+    public synchronized void export() {
+        log.info("Starting blocklist export into format [{}] and into folder [{}]...", exportFormat, exportPath);
+        final File exportFolder = exportPath.toFile();
+        if (exportFolder.isDirectory()) {
+            final File exportFile = Paths.get(exportPath.toString(), filename).toFile();
+            try (OutputStream out = new FileOutputStream(exportFile)) {
+                final Set<byte[]> collection = blocklistRepo.findAll()
+                        .stream().filter(BlocklistRegistry::isActive)
+                        .map(BlocklistRegistry::getDataSet)
+                        .parallel().flatMap(blocklistData -> blocklistData.stream().map(exportFormat::map)
+                                .map(s -> s.getBytes(StandardCharsets.UTF_8)))
+                        .collect(Collectors.toSet());
+                for (byte[] bytes : collection) {
+                    out.write(bytes);
+                }
+            } catch (IOException e) {
+                log.warn("Could not write Blocklist due to Error", e);
+            }
+        }
+
+
     }
 }

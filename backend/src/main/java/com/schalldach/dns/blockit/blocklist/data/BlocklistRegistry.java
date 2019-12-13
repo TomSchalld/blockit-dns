@@ -6,7 +6,9 @@
 
 package com.schalldach.dns.blockit.blocklist.data;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -25,6 +27,8 @@ import java.util.Set;
  */
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "blocklist_registry", uniqueConstraints = @UniqueConstraint(columnNames = "url"))
 public class BlocklistRegistry {
 

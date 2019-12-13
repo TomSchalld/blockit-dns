@@ -20,4 +20,6 @@ public interface BlocklistService {
     void deleteByUrl(String url);
 
     void create(BlocklistCreateDto dto);
+
+    void export();
 }

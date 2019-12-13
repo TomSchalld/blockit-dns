@@ -50,6 +50,14 @@ public class BlocklistController {
         log.debug("Finished Blocklist creation request");
     }
 
+    @PostMapping("/export")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void exportBlocklist() {
+        log.debug("Received new Blocklist creation request");
+        blocklistService.export();
+        log.debug("Finished Blocklist creation request");
+    }
+
     @DeleteMapping("/{url}")
     public ResponseEntity<Void> delete(@PathVariable String url) {
         blocklistService.deleteByUrl(url);
