@@ -37,12 +37,13 @@ public class BlocklistDownloaderImpl implements BlocklistDownloader {
         final URI downloadUri = UriComponentsBuilder.fromHttpUrl(url)
                 .build(true)
                 .toUri();
-
+        log.debug("Starting download of blocklist [{}]", downloadUri);
         final ResponseEntity<byte[]> exchange = restTemplate.exchange(downloadUri, HttpMethod.GET, getHeaders(), byte[].class);
         if (exchange.getStatusCode().isError()) {
             System.err.println("Error");
             return null;
         }
+        log.debug("Finished download of blocklist [{}]", downloadUri);
 
         return exchange.getBody();
 

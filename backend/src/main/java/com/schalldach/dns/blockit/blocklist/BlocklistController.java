@@ -45,17 +45,17 @@ public class BlocklistController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void addBlocklist(@RequestBody BlocklistCreateDto dto) {
-        log.debug("Received new Blocklist creation request");
+        log.trace("Received new Blocklist creation request");
         blocklistService.create(dto);
-        log.debug("Finished Blocklist creation request");
+        log.trace("Finished Blocklist creation request");
     }
 
     @PostMapping("/export")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void exportBlocklist() {
-        log.debug("Received new Blocklist creation request");
+        log.trace("Received new Blocklist creation request");
         blocklistService.export();
-        log.debug("Finished Blocklist creation request");
+        log.trace("Finished Blocklist creation request");
     }
 
     @DeleteMapping("/{url}")

@@ -25,7 +25,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -46,6 +45,9 @@ public class BlocklistServiceImpl implements BlocklistService {
 
     @Autowired
     private BlocklistParser blocklistParser;
+
+    @Autowired
+    private BlocklistPersister blocklistPersister;
 
     @Value("${blocklist.export.format}")
     private SupportedExportFormat exportFormat;
@@ -71,13 +73,19 @@ public class BlocklistServiceImpl implements BlocklistService {
     @Override
     public void create(BlocklistCreateDto dto) {
         final byte[] blocklist = blocklistDownloader.fetch(dto.getUrl());
-        log.info("Fetched data with content length {}", blocklist.length);
+        log.debug("Fetched data with content length {}", blocklist.length);
+        log.debug("Starting blocklist parsing for list [{}]", dto.getUrl());
         final Collection<BlocklistData> blocklistEntries = blocklistParser.parse(blocklist);
+        log.debug("Completed blocklist parsing for list [{}]", dto.getUrl());
+        blocklistPersister.persist(dto, blocklistEntries);
+      /*
         final BlocklistRegistry entity = new BlocklistRegistry();
         entity.setUrl(dto.getUrl());
         entity.setActive(dto.isActive());
         entity.setDataSet(new HashSet<>(blocklistEntries));
+        log.debug("Starting to persist blocklist with [{}] for list [{}]", blocklistEntries.size(), dto.getUrl());
         blocklistRepo.save(entity);
+        log.debug("Completed persistence blocklist for list [{}]", dto.getUrl());*/
     }
 
     @Async("asyncWorker")
