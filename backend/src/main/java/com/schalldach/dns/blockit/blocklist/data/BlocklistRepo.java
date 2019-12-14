@@ -9,6 +9,7 @@ package com.schalldach.dns.blockit.blocklist.data;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -18,5 +19,11 @@ import java.util.Optional;
 public interface BlocklistRepo extends JpaRepository<BlocklistRegistry, Long> {
 
     Optional<BlocklistRegistry> findByUrl(String url);
+
+    Optional<List<BlocklistRegistry>> findAllByActiveTrue();
+
+    default Optional<List<BlocklistRegistry>> findAllActive() {
+        return findAllByActiveTrue();
+    }
 
 }

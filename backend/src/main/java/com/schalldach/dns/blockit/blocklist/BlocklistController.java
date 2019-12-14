@@ -9,7 +9,7 @@ package com.schalldach.dns.blockit.blocklist;
 import com.schalldach.dns.blockit.blocklist.data.BlocklistRegistry;
 import com.schalldach.dns.blockit.blocklist.dto.BlocklistCreateDto;
 import com.schalldach.dns.blockit.blocklist.dto.BlocklistResponseDto;
-import com.schalldach.dns.blockit.blocklist.service.BlocklistService;
+import com.schalldach.dns.blockit.blocklist.service.api.BlocklistService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

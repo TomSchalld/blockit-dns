@@ -4,7 +4,7 @@
  * Written by Thomas Schalldach software@schalldach.com
  */
 
-package com.schalldach.dns.blockit.blocklist.service;
+package com.schalldach.dns.blockit.blocklist.service.api;
 
 import com.schalldach.dns.blockit.blocklist.data.BlocklistRegistry;
 import com.schalldach.dns.blockit.blocklist.dto.BlocklistCreateDto;

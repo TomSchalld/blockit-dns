@@ -6,6 +6,7 @@
 
 package com.schalldach.dns.blockit.blocklist.service;
 
+import com.schalldach.dns.blockit.blocklist.service.api.BlocklistDownloader;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
