@@ -1,10 +1,13 @@
 export HOME="/home/$SUDO_USER"
-export USER_CONF="$HOME/.unbound.conf.d"
+export CONF="/etc/unbound/unbound.conf.d/"
+export SERVER_CONF="server.conf"
 
 apt update && apt upgrade -y
 apt install unbound -y
-systemctl stop unbound
-mkdir $USER_CONF
-echo 'include: "'"$USER_CONF"'/*.conf"' > $USER_CONF/include.conf
-mv $USER_CONF/include.conf /etc/unbound/unbound.conf.d/include.conf
-chown -R $SUDO_USER $USER_CONF
+echo 'server:' > $CONF$SERVER_CONF
+echo 'verbosity: 1' >> $CONF$SERVER_CONF
+echo 'remote-control:' >> $CONF$SERVER_CONF
+echo 'control-enable: yes' >> $CONF$SERVER_CONF
+chown unbound $CONF
+chmod -R 655 $CONF
+systemctl restart unbound

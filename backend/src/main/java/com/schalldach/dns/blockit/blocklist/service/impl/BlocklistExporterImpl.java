@@ -56,15 +56,17 @@ public class BlocklistExporterImpl implements BlocklistExporter {
         if (exportFolder.isDirectory()) {
             final File exportFile = Paths.get(exportPath.toString(), filename).toFile();
             try (OutputStream out = new FileOutputStream(exportFile)) {
-                final List<byte[]> collection = blocklistRepo.findAll()
+                exportFormat.addFileHeader(out);
+                final List<byte[]> blocklists = blocklistRepo.findAll()
                         .stream().filter(BlocklistRegistry::isActive)
                         .map(blocklistRegistry -> blocklistParser.parse(blocklistRegistry.getData().getEntry()))
                         .parallel().flatMap(Collection::stream)
                         .collect(Collectors.toSet())
                         .stream()
-                        .parallel().map(exportFormat::map)
+                        .parallel()
+                        .map(exportFormat::map)
                         .collect(Collectors.toUnmodifiableList());
-                for (byte[] bytes : collection) {
+                for (byte[] bytes : blocklists) {
                     out.write(bytes);
                 }
                 log.info("Finished blocklist export into format [{}], [{}mb] written in [{}]s...", exportFormat, exportFile.length() / MILLION, (new Date().getTime() - startTime) / THOUSAND);

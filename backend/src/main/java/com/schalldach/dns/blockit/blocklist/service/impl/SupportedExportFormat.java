@@ -2,6 +2,8 @@ package com.schalldach.dns.blockit.blocklist.service.impl;
 
 import com.schalldach.dns.blockit.blocklist.service.api.ExportFormat;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -9,33 +11,21 @@ import java.nio.charset.StandardCharsets;
  */
 public enum SupportedExportFormat implements ExportFormat {
     UNBOUND {
-        private static final String LOCAL_ZONE = "local-zone";
-        private static final String REDIRECT = "redirect";
-        public static final String LOCAL_DATA = "local-data: ";
+        private static final String SERVER = "server:";
+        private static final String LOCAL_ZONE = "local-zone: \"";
+        private static final String REFUSE = "\" refuse";
 
-        /* Expected output format
-        local-zone: "1-1ads.com" redirect
-        local-data: "1-1ads.com A 127.0.0.1"
-        */
+
         @Override
         public byte[] map(final String data) {
-            return new StringBuilder(LOCAL_ZONE)
-                    .append(": ")
-                    .append("\"")
-                    .append(data)
-                    .append("\" ")
-                    .append(REDIRECT)
-                    .append(System.lineSeparator())
-                    .append(LOCAL_DATA)
-                    .append("\"")
-                    .append(data)
-                    .append(" A ")
-                    .append(LOCAL_HOST)
-                    .append("\"")
-                    .append(System.lineSeparator())
-                    .toString().getBytes(StandardCharsets.UTF_8);
+            return new StringBuilder(LOCAL_ZONE).append(data).append(REFUSE).append(System.lineSeparator()).toString().getBytes(StandardCharsets.UTF_8);
+        }
+
+        @Override
+        public void addFileHeader(OutputStream out) throws IOException {
+            out.write((SERVER + System.lineSeparator()).getBytes(StandardCharsets.UTF_8));
         }
     };
 
-    public static final String LOCAL_HOST = "127.0.0.1";
+
 }
