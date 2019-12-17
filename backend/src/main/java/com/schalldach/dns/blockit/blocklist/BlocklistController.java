@@ -9,6 +9,7 @@ package com.schalldach.dns.blockit.blocklist;
 import com.schalldach.dns.blockit.blocklist.data.BlocklistRegistry;
 import com.schalldach.dns.blockit.blocklist.dto.BlocklistCreateDto;
 import com.schalldach.dns.blockit.blocklist.dto.BlocklistResponseDto;
+import com.schalldach.dns.blockit.blocklist.service.api.BlocklistRefreshService;
 import com.schalldach.dns.blockit.blocklist.service.api.BlocklistService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,8 @@ public class BlocklistController {
 
     @Autowired
     private BlocklistService blocklistService;
+    @Autowired
+    private BlocklistRefreshService blocklistRefreshService;
 
     @GetMapping
     public ResponseEntity<List<BlocklistResponseDto>> getAll() {
@@ -55,6 +58,14 @@ public class BlocklistController {
     public void exportBlocklist() {
         log.trace("Received new Blocklist creation request");
         blocklistService.export();
+        log.trace("Finished Blocklist creation request");
+    }
+
+    @PostMapping("/reload")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void reloadBlocklist() {
+        log.trace("Received new Blocklist creation request");
+        blocklistRefreshService.refresh();
         log.trace("Finished Blocklist creation request");
     }
 

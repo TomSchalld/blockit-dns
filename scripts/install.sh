@@ -9,5 +9,5 @@ echo 'verbosity: 1' >> $CONF$SERVER_CONF
 echo 'remote-control:' >> $CONF$SERVER_CONF
 echo 'control-enable: yes' >> $CONF$SERVER_CONF
 chown unbound $CONF
-chmod -R 655 $CONF
+chmod -R 755 $CONF
 systemctl restart unbound
