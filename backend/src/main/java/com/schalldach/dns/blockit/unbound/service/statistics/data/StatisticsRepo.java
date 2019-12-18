@@ -1,4 +1,4 @@
-package com.schalldach.dns.blockit.unbound.data;
+package com.schalldach.dns.blockit.unbound.service.statistics.data;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

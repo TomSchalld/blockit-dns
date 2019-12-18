@@ -8,6 +8,8 @@ public interface UnboundService {
 
     void updateStatistics();
 
+    void insertDefaultConfiguration();
+
 
     void doHealthCheck();
 }

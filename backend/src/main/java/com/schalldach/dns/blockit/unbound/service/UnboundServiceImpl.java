@@ -3,17 +3,14 @@ package com.schalldach.dns.blockit.unbound.service;
 import com.schalldach.dns.blockit.control.ServiceControl;
 import com.schalldach.dns.blockit.unbound.UnboundContext;
 import com.schalldach.dns.blockit.unbound.UnboundContext.UpStatus;
-import com.schalldach.dns.blockit.unbound.data.DataPoint;
-import com.schalldach.dns.blockit.unbound.data.KeyValueStat;
-import com.schalldach.dns.blockit.unbound.data.StatisticsRepo;
+import com.schalldach.dns.blockit.unbound.service.configuration.UnboundConfigurer;
 import com.schalldach.dns.blockit.unbound.service.control.UnboundCommands;
+import com.schalldach.dns.blockit.unbound.service.statistics.UnboundStatistics;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by @author Thomas Schalldach on 17/12/2019 software@thomas-schalldach.de.
@@ -21,32 +18,27 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UnboundServiceImpl implements UnboundService {
 
+    private final UnboundContext context = UnboundContext.getInstance();
 
     @Autowired
     private ServiceControl serviceControl;
 
     @Autowired
-    private StatisticsRepo statisticsRepo;
+    private UnboundStatistics unboundStatistics;
 
-    private final UnboundContext context = UnboundContext.getInstance();
+    @Autowired
+    private UnboundConfigurer unboundConfigurer;
 
 
     @Override
-    @Transactional
     public void updateStatistics() {
-        final List<String> result = serviceControl.execRemoteCommand(UnboundCommands.STATS_NORESET);
-        if (log.isTraceEnabled()) {
-            result.forEach(log::trace);
-        }
-        final DataPoint entity = new DataPoint();
-        final List<KeyValueStat> stats = result.stream()
-                .filter(s -> s.startsWith("total"))
-                .map(s -> s.split("="))
-                .map(split -> KeyValueStat.builder().key(split[0]).value(split[1]).dataPoint(entity).build())
-                .collect(Collectors.toUnmodifiableList());
-        entity.setCreationDate(new Date());
-        entity.setKeyValueStats(stats);
-        statisticsRepo.save(entity);
+        unboundStatistics.updateStatistics();
+    }
+
+    @PostConstruct
+    @Override
+    public void insertDefaultConfiguration() {
+        unboundConfigurer.insertDefault();
     }
 
     @Override

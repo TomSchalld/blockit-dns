@@ -1,4 +1,4 @@
-package com.schalldach.dns.blockit.unbound.data;
+package com.schalldach.dns.blockit.unbound.service.statistics.data;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
