@@ -29,5 +29,22 @@ create table configuration
     conf_key          varchar(255)  not null,
     conf_key_provider varchar(255)  not null,
     conf_value        varchar(2048) null,
-    constraint UKconfkeyconstraint unique (conf_key,conf_key_provider,conf_value)
+    constraint UKconfkeyconstraint unique (conf_key, conf_key_provider, conf_value)
 );
+
+create table unbound_stats_data
+(
+    id            bigint   not null primary key auto_increment,
+    creation_date datetime null,
+    version       bigint   null
+);
+
+create table unbound_stats_point
+(
+    id                    bigint        not null primary key auto_increment,
+    unbound_stats_data_id bigint        not null,
+    stats_key             varchar(255)  not null,
+    stats_value           varchar(2048) null,
+    constraint FKstats_point foreign key (unbound_stats_data_id) references unbound_stats_data (id) on delete cascade
+);
+

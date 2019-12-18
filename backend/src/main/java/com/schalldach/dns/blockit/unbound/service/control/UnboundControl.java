@@ -1,4 +1,4 @@
-package com.schalldach.dns.blockit.unbound;
+package com.schalldach.dns.blockit.unbound.service.control;
 
 import com.schalldach.dns.blockit.control.RemoteCommand;
 import com.schalldach.dns.blockit.control.ServiceControl;
@@ -32,6 +32,7 @@ public class UnboundControl implements ServiceControl {
     @Value("${dns.server.remote.port:8953}")
     private Integer port;
 
+
     @Override
     public List<String> execRemoteCommand(RemoteCommand command, String... args) {
         final List<String> answer = new ArrayList<>();
@@ -39,7 +40,7 @@ public class UnboundControl implements ServiceControl {
              PrintWriter writer = new PrintWriter(new BufferedOutputStream(socket.getOutputStream()));
              BufferedReader reader =
                      new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
-            log.info("Executing command: [{}] with args [{}]", command, args);
+            log.trace("Executing command: [{}] with args [{}]", command, args);
             writer.write(command.execute(args));
             writer.write("\n");
             writer.flush();

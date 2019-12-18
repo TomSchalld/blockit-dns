@@ -1,4 +1,4 @@
-package com.schalldach.dns.blockit.unbound;
+package com.schalldach.dns.blockit.unbound.service;
 
 /**
  * Created by @author Thomas Schalldach on 17/12/2019 software@thomas-schalldach.de.

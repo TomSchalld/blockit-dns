@@ -1,4 +1,4 @@
-package com.schalldach.dns.blockit.unbound;
+package com.schalldach.dns.blockit.unbound.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

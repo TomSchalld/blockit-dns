@@ -1,4 +1,4 @@
-package com.schalldach.dns.blockit.unbound;
+package com.schalldach.dns.blockit.unbound.service.control;
 
 import com.schalldach.dns.blockit.control.RemoteCommand;
 

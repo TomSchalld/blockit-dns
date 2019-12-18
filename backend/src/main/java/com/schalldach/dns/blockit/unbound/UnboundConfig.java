@@ -1,6 +1,10 @@
 package com.schalldach.dns.blockit.unbound;
 
 import com.schalldach.dns.blockit.control.ServiceControl;
+import com.schalldach.dns.blockit.unbound.service.UnboundScheduler;
+import com.schalldach.dns.blockit.unbound.service.UnboundService;
+import com.schalldach.dns.blockit.unbound.service.UnboundServiceImpl;
+import com.schalldach.dns.blockit.unbound.service.control.UnboundControl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.annotation.ApplicationScope;
