@@ -16,13 +16,13 @@ public class UnboundScheduler {
 
     @Scheduled(cron = "${statistic.refresh.cron}")
     public void runStatisticsJob() {
-        log.debug("Running Statistics Job");
+        log.trace("Running Statistics Job");
         unboundService.updateStatistics();
     }
 
     @Scheduled(cron = "${healthcheck.refresh.cron}")
     public void runHealthCheckJob() {
-        log.debug("Running Statistics Job");
+        log.trace("Running Health check Job");
         unboundService.doHealthCheck();
     }
 

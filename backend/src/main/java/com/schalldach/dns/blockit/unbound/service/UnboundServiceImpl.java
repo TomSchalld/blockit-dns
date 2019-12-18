@@ -49,4 +49,9 @@ public class UnboundServiceImpl implements UnboundService {
         }
         context.setUpStatus(new UpStatus(result));
     }
+
+    @Override
+    public void exportConfiguration(String configurationName) {
+        unboundConfigurer.export(configurationName);
+    }
 }

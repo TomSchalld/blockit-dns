@@ -12,4 +12,6 @@ public interface UnboundService {
 
 
     void doHealthCheck();
+
+    void exportConfiguration(String configurationName);
 }

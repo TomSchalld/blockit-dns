@@ -6,7 +6,7 @@ import java.io.OutputStream;
 /**
  * Created by @author Thomas Schalldach on 12/12/2019 software@thomas-schalldach.de.
  */
-public interface ExportFormat {
+public interface BlocklistExportFormat {
 
     byte[] map(final String data);
 

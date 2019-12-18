@@ -1,6 +1,6 @@
 package com.schalldach.dns.blockit.blocklist.service.impl;
 
-import com.schalldach.dns.blockit.blocklist.service.api.ExportFormat;
+import com.schalldach.dns.blockit.blocklist.service.api.BlocklistExportFormat;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * Created by @author Thomas Schalldach on 12/12/2019 software@thomas-schalldach.de.
  */
-public enum SupportedExportFormat implements ExportFormat {
+public enum SupportedExportFormat implements BlocklistExportFormat {
     UNBOUND {
         private static final String SERVER = "server:";
         private static final String LOCAL_ZONE = "local-zone: \"";

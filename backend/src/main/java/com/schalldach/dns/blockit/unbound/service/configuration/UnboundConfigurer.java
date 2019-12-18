@@ -5,4 +5,6 @@ package com.schalldach.dns.blockit.unbound.service.configuration;
  */
 public interface UnboundConfigurer {
     void insertDefault();
+
+    void export(String configurationName);
 }

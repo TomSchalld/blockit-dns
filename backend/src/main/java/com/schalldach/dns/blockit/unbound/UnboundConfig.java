@@ -4,6 +4,8 @@ import com.schalldach.dns.blockit.control.ServiceControl;
 import com.schalldach.dns.blockit.unbound.service.UnboundScheduler;
 import com.schalldach.dns.blockit.unbound.service.UnboundService;
 import com.schalldach.dns.blockit.unbound.service.UnboundServiceImpl;
+import com.schalldach.dns.blockit.unbound.service.configuration.ConfigurationExporter;
+import com.schalldach.dns.blockit.unbound.service.configuration.ConfigurationExporterImpl;
 import com.schalldach.dns.blockit.unbound.service.configuration.UnboundConfigurer;
 import com.schalldach.dns.blockit.unbound.service.configuration.UnboundConfigurerImpl;
 import com.schalldach.dns.blockit.unbound.service.control.UnboundControl;
@@ -42,6 +44,11 @@ public class UnboundConfig {
     @Bean
     public UnboundConfigurer unboundConfigurer() {
         return new UnboundConfigurerImpl();
+    }
+
+    @Bean
+    public ConfigurationExporter configurationExporter() {
+        return new ConfigurationExporterImpl();
     }
 
 
