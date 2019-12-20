@@ -19,7 +19,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -36,7 +35,7 @@ public class BlocklistDownloaderImplTest {
     final URI serviceUri = UriComponentsBuilder.fromHttpUrl(SERVICE_URL).build(true).toUri();
 
 
-    private final static String[] URLS = {"http://pgl.yoyo.org/adservers/serverlist.php?hostformat=none&showintro=0&mimetype=plaintext",
+    private final static String[] URLS = {"https://pgl.yoyo.org/adservers/serverlist.php?hostformat=none&showintro=0&mimetype=plaintext",
             "https://blocklist.site/app/dl/ads",
             "https://blocklist.site/app/dl/crypto",
             "https://blocklist.site/app/dl/drugs",
@@ -56,7 +55,7 @@ public class BlocklistDownloaderImplTest {
             "https://blocklist.site/app/dl/facebook",
             "https://blocklist.site/app/dl/youtube"};
 
-    private final static String[] URLS2 = {"http://pgl.yoyo.org/adservers/serverlist.php?hostformat=none&showintro=0&mimetype=plaintext"};
+    private final static String[] URLS2 = {"https://pgl.yoyo.org/adservers/serverlist.php?hostformat=none&showintro=0&mimetype=plaintext"};
 
     @Autowired
     private BlocklistDownloader blocklistDownloader;
@@ -66,21 +65,22 @@ public class BlocklistDownloaderImplTest {
     public void fetch() {
 //        final String url = "https://blocklist.site/app/dl/ads";
         final String url = "http://pgl.yoyo.org/adservers/serverlist.php?hostformat=none&showintro=0&mimetype=plaintext";
-        final byte[] fetch = blocklistDownloader.fetch(url);
-        Assert.notNull(fetch, "Fetched data null");
+//        final byte[] fetch = blocklistDownloader.fetch(url);
+//        Assert.notNull(fetch, "Fetched data null");
 
     }
 
     @Test
     @Ignore
-    public void prepopulte() {
+    public void prepopulte() throws InterruptedException {
         final RestTemplate template = new RestTemplate();
-        Stream.of(URLS).forEach(url -> {
+        for (String url : URLS) {
+            Thread.sleep(3000);
             final HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setBasicAuth("user", "user");
             httpHeaders.set("Accept", MediaType.APPLICATION_JSON_VALUE);
             ResponseEntity<String> response = template.exchange(serviceUri, HttpMethod.POST, new HttpEntity<>(new RequestDto(url, true), httpHeaders), String.class);
-        });
+        }
 
     }
 
@@ -92,6 +92,21 @@ public class BlocklistDownloaderImplTest {
             final HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setBasicAuth("user", "user");
             httpHeaders.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+            log.info("inserting url [{}]",url);
+            ResponseEntity<String> response = template.exchange(serviceUri, HttpMethod.POST, new HttpEntity<>(new RequestDto(url, true), httpHeaders), String.class);
+        });
+
+    }
+
+    @Test
+    @Ignore
+    public void prepopultetwo() {
+        final RestTemplate template = new RestTemplate();
+        Stream.of(URLS).limit(4).forEach(url -> {
+            final HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setBasicAuth("user", "user");
+            httpHeaders.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+            log.info("inserting url [{}]",url);
             ResponseEntity<String> response = template.exchange(serviceUri, HttpMethod.POST, new HttpEntity<>(new RequestDto(url, true), httpHeaders), String.class);
         });
 
