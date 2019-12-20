@@ -1,9 +1,10 @@
 package com.schalldach.dns.blockit.blocklist.service.impl;
 
+import com.schalldach.dns.blockit.blocklist.data.BlacklistRepo;
 import com.schalldach.dns.blockit.blocklist.data.BlocklistRegistry;
 import com.schalldach.dns.blockit.blocklist.data.BlocklistRepo;
+import com.schalldach.dns.blockit.blocklist.data.WhitelistRepo;
 import com.schalldach.dns.blockit.blocklist.service.api.BlocklistExporter;
-import com.schalldach.dns.blockit.blocklist.service.api.BlocklistParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +19,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.schalldach.dns.blockit.blocklist.service.impl.BlocklistServiceImpl.MILLION;
@@ -31,11 +33,13 @@ import static com.schalldach.dns.blockit.blocklist.service.impl.BlocklistService
 @Slf4j
 public class BlocklistExporterImpl implements BlocklistExporter {
 
-    @Autowired
-    private BlocklistParser blocklistParser;
 
     @Autowired
     private BlocklistRepo blocklistRepo;
+    @Autowired
+    private WhitelistRepo whitelistRepo;
+    @Autowired
+    private BlacklistRepo blacklistRepo;
 
     @Value("${blocklist.export.format}")
     private SupportedExportFormat exportFormat;
@@ -57,18 +61,51 @@ public class BlocklistExporterImpl implements BlocklistExporter {
             final File exportFile = Paths.get(exportPath.toString(), filename).toFile();
             try (OutputStream out = new FileOutputStream(exportFile)) {
                 exportFormat.addFileHeader(out);
-                final List<byte[]> blocklists = blocklistRepo.findAll()
-                        .stream().filter(BlocklistRegistry::isActive)
-                        .map(blocklistRegistry -> blocklistParser.parse(blocklistRegistry.getData().getEntry()))
-                        .parallel().flatMap(Collection::stream)
-                        .collect(Collectors.toSet())
+                final Set<String> blacklisted = new HashSet<>(blacklistRepo.getAllDomains());
+                blacklisted.addAll(blocklistRepo.findAllActive()
                         .stream()
-                        .parallel()
+                        .flatMap(Collection::stream)
+                        .map(BlocklistRegistry::getBlocklist)
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toSet()));
+                blacklisted.removeAll(whitelistRepo.getAllDomains());
+                blacklisted.stream()
                         .map(exportFormat::map)
-                        .collect(Collectors.toUnmodifiableList());
-                for (byte[] bytes : blocklists) {
-                    out.write(bytes);
-                }
+                        .forEach(bytes -> {
+                            try {
+                                out.write(bytes);
+                            } catch (IOException e) {
+                                log.warn("Could not write Blocklist due to Error", e);
+                            }
+                        });
+                log.info("Finished blocklist export into format [{}], [{}mb] written in [{}]s...", exportFormat, exportFile.length() / MILLION, (new Date().getTime() - startTime) / THOUSAND);
+            } catch (IOException e) {
+                log.warn("Could not write Blocklist due to Error", e);
+            }
+        }
+    }
+
+    @Transactional
+    public void exportActiveNativeQuery() {
+        log.info("Starting blocklist export into format [{}] and into folder [{}]...", exportFormat, exportPath);
+        final long startTime = new Date().getTime();
+        final File exportFolder = exportPath.toFile();
+        if (exportFolder.isDirectory()) {
+            final File exportFile = Paths.get(exportPath.toString(), filename).toFile();
+            try (OutputStream out = new FileOutputStream(exportFile)) {
+                exportFormat.addFileHeader(out);
+                final Set<String> blocklists = new HashSet<>(blocklistRepo.findAllActiveDomains());
+                blocklists.addAll(blacklistRepo.getAllDomains());
+                blocklists.removeAll(whitelistRepo.getAllDomains());
+                blocklists.stream()
+                        .map(exportFormat::map)
+                        .forEach(bytes -> {
+                            try {
+                                out.write(bytes);
+                            } catch (IOException e) {
+                                log.warn("Could not write Blocklist due to Error", e);
+                            }
+                        });
                 log.info("Finished blocklist export into format [{}], [{}mb] written in [{}]s...", exportFormat, exportFile.length() / MILLION, (new Date().getTime() - startTime) / THOUSAND);
             } catch (IOException e) {
                 log.warn("Could not write Blocklist due to Error", e);

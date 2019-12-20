@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -22,6 +23,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Created by @author Thomas Schalldach on 12/12/2019 software@thomas-schalldach.de.
@@ -34,7 +36,8 @@ public class BlocklistDownloaderImpl implements BlocklistDownloader {
     private RestTemplate restTemplate;
 
     @Override
-    public byte[] fetch(String url) {
+    @Async("asyncWorker")
+    public CompletableFuture<byte[]> fetch(String url) {
         final URI downloadUri = UriComponentsBuilder.fromHttpUrl(url)
                 .build(true)
                 .toUri();
@@ -46,7 +49,7 @@ public class BlocklistDownloaderImpl implements BlocklistDownloader {
         }
         log.debug("Finished download of blocklist [{}]", downloadUri);
 
-        return exchange.getBody();
+        return CompletableFuture.completedFuture(exchange.getBody());
 
     }
 

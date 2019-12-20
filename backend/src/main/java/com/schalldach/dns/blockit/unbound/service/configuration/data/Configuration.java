@@ -7,6 +7,7 @@ import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -293,6 +294,7 @@ public class Configuration {
      */
     @Column(name = "access_control")
     @FileMapping("access-control")
+    @CollectionTable(name = "unbound_configuration_access_control")
     @ElementCollection
     private List<String> accessControl;
 
@@ -380,6 +382,7 @@ public class Configuration {
      */
     @Column(name = "private_address")
     @FileMapping("private-address")
+    @CollectionTable(name = "unbound_configuration_private_address")
     @ElementCollection
     private List<String> privateAddress;
 
@@ -390,6 +393,7 @@ public class Configuration {
      */
     @Column(name = "private_domain")
     @FileMapping("private-domain")
+    @CollectionTable(name = "unbound_configuration_private_domain")
     @ElementCollection
     private List<String> privateDomain;
 
@@ -462,6 +466,7 @@ public class Configuration {
 
     @Column(name = "forward_addr")
     @FileMapping("forward-addr")
+    @CollectionTable(name = "unbound_configuration_forward_addr")
     @ElementCollection
     private List<String> forwardAddress;
 

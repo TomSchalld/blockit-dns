@@ -6,9 +6,11 @@
 
 package com.schalldach.dns.blockit.blocklist.service.api;
 
+import java.util.concurrent.CompletableFuture;
+
 /**
  * Created by @author Thomas Schalldach on 12/12/2019 software@thomas-schalldach.de.
  */
 public interface BlocklistDownloader {
-    byte[] fetch(String url);
+    CompletableFuture<byte[]> fetch(String url);
 }

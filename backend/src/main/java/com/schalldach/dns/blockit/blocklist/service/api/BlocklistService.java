@@ -17,9 +17,13 @@ import java.util.List;
 public interface BlocklistService {
     List<BlocklistRegistry> findAll();
 
+    List<BlocklistRegistry> findAllActive();
+
     void deleteByUrl(String url);
 
     void create(BlocklistCreateDto dto);
 
     void export();
+
+    Long count();
 }

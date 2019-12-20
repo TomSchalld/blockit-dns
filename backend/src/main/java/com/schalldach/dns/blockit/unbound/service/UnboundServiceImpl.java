@@ -45,7 +45,7 @@ public class UnboundServiceImpl implements UnboundService {
     public void doHealthCheck() {
         final List<String> result = serviceControl.execRemoteCommand(UnboundCommands.STATUS);
         if (log.isTraceEnabled()) {
-            result.forEach(log::debug);
+            result.forEach(log::trace);
         }
         context.setUpStatus(new UpStatus(result));
     }
@@ -53,5 +53,13 @@ public class UnboundServiceImpl implements UnboundService {
     @Override
     public void exportConfiguration(String configurationName) {
         unboundConfigurer.export(configurationName);
+    }
+
+    @Override
+    public void reload() {
+        final List<String> result = serviceControl.execRemoteCommand(UnboundCommands.RELOAD);
+        if (log.isTraceEnabled()) {
+            result.forEach(log::trace);
+        }
     }
 }

@@ -31,5 +31,13 @@ public class UnboundController {
         log.trace("Finished Configuration export request");
     }
 
+    @PostMapping("/reload")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void reloadService() {
+        log.trace("Trying to reload service");
+        unboundService.reload();
+        log.trace("Service reloaded");
+    }
+
 
 }

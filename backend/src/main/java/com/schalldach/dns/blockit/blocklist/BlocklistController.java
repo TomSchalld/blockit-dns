@@ -53,6 +53,11 @@ public class BlocklistController {
         log.trace("Finished Blocklist creation request");
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<Long> countBlocked() {
+        return new ResponseEntity<>(blocklistService.count(), HttpStatus.OK);
+    }
+
     @PostMapping("/export")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void exportBlocklist() {
@@ -70,9 +75,9 @@ public class BlocklistController {
     }
 
     @DeleteMapping("/{url}")
-    public ResponseEntity<Void> delete(@PathVariable String url) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable String url) {
         blocklistService.deleteByUrl(url);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     private List<BlocklistResponseDto> mapToDto(final List<BlocklistRegistry> blocklistRegistries) {

@@ -6,19 +6,22 @@
 
 package com.schalldach.dns.blockit.blocklist.service.impl;
 
-import com.schalldach.dns.blockit.blocklist.data.BlocklistData;
 import com.schalldach.dns.blockit.blocklist.data.BlocklistRegistry;
 import com.schalldach.dns.blockit.blocklist.data.BlocklistRepo;
 import com.schalldach.dns.blockit.blocklist.dto.BlocklistCreateDto;
 import com.schalldach.dns.blockit.blocklist.service.api.BlocklistDownloader;
 import com.schalldach.dns.blockit.blocklist.service.api.BlocklistExporter;
+import com.schalldach.dns.blockit.blocklist.service.api.BlocklistParser;
 import com.schalldach.dns.blockit.blocklist.service.api.BlocklistService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -41,10 +44,22 @@ public class BlocklistServiceImpl implements BlocklistService {
     @Autowired
     private BlocklistExporter blocklistExporter;
 
+    @Autowired
+    private BlocklistParser blocklistParser;
+
+    @Autowired
+    @Qualifier("asyncWorker")
+    private TaskExecutor taskExecutor;
+
 
     @Override
     public List<BlocklistRegistry> findAll() {
         return blocklistRepo.findAll();
+    }
+
+    @Override
+    public List<BlocklistRegistry> findAllActive() {
+        return blocklistRepo.findAllActive().orElse(Collections.emptyList());
     }
 
     @Override
@@ -55,21 +70,38 @@ public class BlocklistServiceImpl implements BlocklistService {
     @Async("asyncWorker")
     @Override
     public void create(BlocklistCreateDto dto) {
-        final byte[] blocklist = blocklistDownloader.fetch(dto.getUrl());
-        log.debug("Fetched data with content length {}", blocklist.length);
-        final BlocklistRegistry entity = new BlocklistRegistry();
-        entity.setUrl(dto.getUrl());
-        entity.setActive(dto.isActive());
-        entity.setData(new BlocklistData(blocklist));
-        log.debug("Starting to persist blocklist with [{}kb] for list [{}]", blocklist.length / THOUSAND, dto.getUrl());
-        blocklistRepo.save(entity);
-        log.debug("Completed persistence blocklist for list [{}]", dto.getUrl());
+        blocklistDownloader.fetch(dto.getUrl()).handleAsync((bytes, throwable) -> {
+            if (throwable != null) {
+                log.warn("something went wrong", throwable);
+            }
+            log.debug("Fetched data with content length {}", bytes.length);
+            final BlocklistRegistry entity = new BlocklistRegistry();
+            entity.setUrl(dto.getUrl());
+            entity.setActive(dto.isActive());
+            entity.setBlocklist(blocklistParser.parse(bytes));
+            return entity;
+        }, taskExecutor).handleAsync((blocklistRegistry, throwable) -> {
+            if (throwable != null) {
+                log.warn("something went wrong", throwable);
+            }
+            log.debug("Starting to persist blocklist with [{}] entries for list [{}]", blocklistRegistry.getBlocklist().size() / THOUSAND, dto.getUrl());
+            blocklistRepo.save(blocklistRegistry);
+            log.debug("Completed persistence blocklist for list [{}]", dto.getUrl());
+            return Void.TYPE;
+        }, taskExecutor);
+
     }
 
     @Async("asyncWorker")
     @Override
     public synchronized void export() {
         blocklistExporter.exportActive();
+    }
+
+
+    @Override
+    public Long count() {
+        return blocklistRepo.countBlockedDomains();
     }
 
 

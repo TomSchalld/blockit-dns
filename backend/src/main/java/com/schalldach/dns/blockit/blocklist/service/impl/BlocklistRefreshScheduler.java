@@ -20,8 +20,7 @@ public class BlocklistRefreshScheduler {
     @Scheduled(cron = "${blocklist.refresh.cron}")
     public void refresh() {
         log.info("Refreshing all active blocklists");
-
-
+        blocklistRefreshService.refresh();
     }
 
 
