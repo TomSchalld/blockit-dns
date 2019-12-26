@@ -26,4 +26,8 @@ public interface BlocklistService {
     void export();
 
     Long count();
+
+    void deleteById(Long id);
+
+    void update(Long id, BlocklistCreateDto dto);
 }

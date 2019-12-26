@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -74,18 +75,20 @@ public class BlocklistController {
         log.trace("Finished Blocklist creation request");
     }
 
-    @DeleteMapping("/{url}")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable String url) {
-        blocklistService.deleteByUrl(url);
+    public void delete(@PathVariable Long id) {
+        blocklistService.deleteById(id);
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void update(@PathVariable Long id, @RequestBody BlocklistCreateDto dto) {
+        blocklistService.update(id, dto);
     }
 
     private List<BlocklistResponseDto> mapToDto(final List<BlocklistRegistry> blocklistRegistries) {
-        return blocklistRegistries.stream().map(blocklistRegistry -> new BlocklistResponseDto(blocklistRegistry.getUrl(), blocklistRegistry.isActive())).collect(Collectors.toList());
-    }
-
-    private BlocklistResponseDto mapToDto(final BlocklistRegistry blocklistRegistry) {
-        return new BlocklistResponseDto(blocklistRegistry.getUrl(), blocklistRegistry.isActive());
+        return blocklistRegistries.stream().map(blocklistRegistry -> new BlocklistResponseDto(blocklistRegistry.getId(), blocklistRegistry.getUrl(), blocklistRegistry.isActive())).collect(Collectors.toList());
     }
 
 

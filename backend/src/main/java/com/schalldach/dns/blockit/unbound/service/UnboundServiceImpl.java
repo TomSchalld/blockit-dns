@@ -53,6 +53,7 @@ public class UnboundServiceImpl implements UnboundService {
     @Override
     public void exportConfiguration(String configurationName) {
         unboundConfigurer.export(configurationName);
+        reload();
     }
 
     @Override

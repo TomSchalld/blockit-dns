@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 @SpringBootTest
 @Slf4j
 public class BlocklistDownloaderImplTest {
-    private final static String SERVICE_URL = "http://localhost:8080/blocklists";
+    private final static String SERVICE_URL = "http://192.168.188.90:8080/blocklists";
     final URI serviceUri = UriComponentsBuilder.fromHttpUrl(SERVICE_URL).build(true).toUri();
 
 
@@ -51,9 +51,7 @@ public class BlocklistDownloaderImplTest {
             "https://blocklist.site/app/dl/scam",
             "https://blocklist.site/app/dl/spam",
             "https://blocklist.site/app/dl/torrent",
-            "https://blocklist.site/app/dl/tracking",
-            "https://blocklist.site/app/dl/facebook",
-            "https://blocklist.site/app/dl/youtube"};
+            "https://blocklist.site/app/dl/tracking"};
 
     private final static String[] URLS2 = {"https://pgl.yoyo.org/adservers/serverlist.php?hostformat=none&showintro=0&mimetype=plaintext"};
 

@@ -14,6 +14,7 @@ import lombok.Data;
 @Data
 public class BlocklistResponseDto {
 
+    private final Long id;
     private final String url;
     private final boolean active;
 

@@ -63,7 +63,7 @@ public final class ConfigurationParser {
                     return new ArrayList<String>(0);
                 })
                 .flatMap(Collection::stream)
-                .peek(log::info)
+                .peek(log::trace)
                 .map(s -> (s + System.lineSeparator()).getBytes(StandardCharsets.UTF_8))
                 .collect(Collectors.toList());
     }

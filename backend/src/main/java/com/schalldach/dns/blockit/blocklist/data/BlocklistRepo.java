@@ -28,10 +28,10 @@ public interface BlocklistRepo extends JpaRepository<BlocklistRegistry, Long> {
         return findAllByActiveTrue();
     }
 
-    @Query(value = "select distinct blocklist from blocklist_registry_blocklist where blocklist_registry_id in (select id from blocklist_registry where active = true)", nativeQuery = true)
+    @Query(value = "select distinct blocklist from blocklist_entries where blocklist_registry_id in (select id from blocklist_registry where active = true)", nativeQuery = true)
     Set<String> findAllActiveDomains();
 
-    @Query(value = "select count(distinct blocklist) from blocklist_registry_blocklist", nativeQuery = true)
+    @Query(value = "select count(distinct blocklist) from blocklist_entries", nativeQuery = true)
     Long countBlockedDomains();
 
 }

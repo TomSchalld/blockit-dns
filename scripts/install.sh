@@ -12,8 +12,14 @@ echo 'server:' > $CONF$SERVER_CONF
 echo 'verbosity: 3' >> $CONF$SERVER_CONF
 echo 'remote-control:' >> $CONF$CONTROL_CONF
 echo 'control-enable: yes' >> $CONF$CONTROL_CONF
-echo 'control-interface: 0.0.0.0' >> $CONF$CONTROL_CONF
+echo 'control-interface: 127.0.0.1' >> $CONF$CONTROL_CONF
 echo 'control-use-cert:no' >> $CONF$CONTROL_CONF
 chown unbound $CONF
 chmod -R 755 $CONF
+mysql -e "CREATE DATABASE blockit;
+create user 'blockit' identified by 'blockit';
+GRANT all on blockit.* to blockit;"
+cp $HOME/blockit.jar /usr/sbin/blockit.jar
+cp $HOME/blockit.service /etc/systemd/system/blockit.service
 systemctl restart unbound
+systemctl start blockit

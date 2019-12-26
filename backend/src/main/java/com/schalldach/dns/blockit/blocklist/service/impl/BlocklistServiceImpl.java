@@ -104,5 +104,17 @@ public class BlocklistServiceImpl implements BlocklistService {
         return blocklistRepo.countBlockedDomains();
     }
 
+    @Override
+    public void deleteById(Long id) {
+        blocklistRepo.deleteById(id);
+    }
+
+    @Override
+    public void update(Long id, BlocklistCreateDto dto) {
+        final BlocklistRegistry one = blocklistRepo.getOne(id);
+        one.setUrl(dto.getUrl());
+        one.setActive(dto.isActive());
+    }
+
 
 }
