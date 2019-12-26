@@ -1,8 +1,8 @@
 package com.schalldach.dns.blockit.unbound.service;
 
 import com.schalldach.dns.blockit.control.ServiceControl;
+import com.schalldach.dns.blockit.stats.api.UpStatusAware.UpStatus;
 import com.schalldach.dns.blockit.unbound.UnboundContext;
-import com.schalldach.dns.blockit.unbound.UnboundContext.UpStatus;
 import com.schalldach.dns.blockit.unbound.service.configuration.UnboundConfigurer;
 import com.schalldach.dns.blockit.unbound.service.control.UnboundCommands;
 import com.schalldach.dns.blockit.unbound.service.statistics.UnboundStatistics;

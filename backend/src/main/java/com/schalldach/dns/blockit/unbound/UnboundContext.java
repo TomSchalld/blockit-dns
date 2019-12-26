@@ -1,13 +1,11 @@
 package com.schalldach.dns.blockit.unbound;
 
-import lombok.Data;
-
-import java.util.Collection;
+import com.schalldach.dns.blockit.stats.api.UpStatusAware;
 
 /**
  * Created by @author Thomas Schalldach on 18/12/2019 software@thomas-schalldach.de.
  */
-public final class UnboundContext {
+public final class UnboundContext implements UpStatusAware {
 
     private static UnboundContext ctx;
     private final static Object lock = new Object();
@@ -28,6 +26,7 @@ public final class UnboundContext {
         return ctx;
     }
 
+    @Override
     public UpStatus getUpStatus() {
         return upStatus;
     }
@@ -36,8 +35,5 @@ public final class UnboundContext {
         this.upStatus = upStatus;
     }
 
-    @Data
-    public static final class UpStatus {
-        private final Collection<String> healthStatus;
-    }
+
 }

@@ -6,7 +6,7 @@ import com.schalldach.dns.blockit.control.RemoteCommand;
  * Created by @author Thomas Schalldach on 17/12/2019 software@thomas-schalldach.de.
  */
 public enum UnboundCommands implements RemoteCommand {
-    RELOAD, STATS_NORESET, STATUS;
+    RELOAD, STATS_NORESET, STATUS, STATS;
 
     private final static String MAGIC = "UBCT1";
 

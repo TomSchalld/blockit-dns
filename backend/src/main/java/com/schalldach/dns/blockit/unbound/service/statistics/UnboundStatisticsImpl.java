@@ -30,7 +30,7 @@ public class UnboundStatisticsImpl implements UnboundStatistics {
 
     @Override
     public void updateStatistics() {
-        final List<String> result = serviceControl.execRemoteCommand(UnboundCommands.STATS_NORESET);
+        final List<String> result = serviceControl.execRemoteCommand(UnboundCommands.STATS);
         if (log.isTraceEnabled()) {
             result.forEach(log::trace);
         }

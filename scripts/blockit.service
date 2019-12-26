@@ -1,0 +1,13 @@
+[Unit]
+Description=Blockit extension for unbound DNS
+After=network.target unbound.service
+
+[Service]
+User=unbound
+Restart=on-failure
+ExecStart=/usr/sbin/blockit.jar
+PIDFile=/run/blockit.pid
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target
