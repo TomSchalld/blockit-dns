@@ -1,10 +1,14 @@
-package com.schalldach.dns.blockit.unbound.service.statistics.data;
+package com.schalldach.dns.blockit.stats.data;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,7 +23,10 @@ import java.util.List;
  * Created by @author Thomas Schalldach on 18/12/2019 software@thomas-schalldach.de.
  */
 @Entity
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "unbound_stats_data")
 public class DataPoint {
 
@@ -31,7 +38,7 @@ public class DataPoint {
     @Column
     private Date creationDate;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "unbound_stats_data_id")
     private List<KeyValueStat> keyValueStats;
 

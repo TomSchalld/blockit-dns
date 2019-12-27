@@ -1,10 +1,11 @@
-package com.schalldach.dns.blockit.unbound.service.statistics.data;
+package com.schalldach.dns.blockit.stats.data;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,7 +19,8 @@ import javax.persistence.Table;
 /**
  * Created by @author Thomas Schalldach on 17/12/2019 software@thomas-schalldach.de.
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder

@@ -1,10 +1,10 @@
 package com.schalldach.dns.blockit.unbound.service.statistics;
 
 import com.schalldach.dns.blockit.control.ServiceControl;
+import com.schalldach.dns.blockit.stats.data.DataPoint;
+import com.schalldach.dns.blockit.stats.data.KeyValueStat;
+import com.schalldach.dns.blockit.stats.data.StatisticsRepo;
 import com.schalldach.dns.blockit.unbound.service.control.UnboundCommands;
-import com.schalldach.dns.blockit.unbound.service.statistics.data.DataPoint;
-import com.schalldach.dns.blockit.unbound.service.statistics.data.KeyValueStat;
-import com.schalldach.dns.blockit.unbound.service.statistics.data.StatisticsRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
