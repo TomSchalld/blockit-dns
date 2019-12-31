@@ -7,5 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface UnboundStatistics {
     @Transactional
-    void updateStatistics();
+    void updateCurrentStatistics();
+
+    @Transactional
+    void consolidate();
 }

@@ -14,7 +14,10 @@ public interface StatisticsRepo extends JpaRepository<DataPoint, Long> {
 
 
     @Query(value = "select * from unbound_stats_data where date(creation_date) = :creationDate", nativeQuery = true)
-    List<DataPoint> getAllByCreationDate(@Param("creationDate") Date creationDate);
+    List<DataPoint> getAllByCreationDay(@Param("creationDate") Date creationDate);
+
+    @Query(value = "select * from unbound_stats_data where hour(creation_date) = :creationTime and date(creation_date) = :creationDate", nativeQuery = true)
+    List<DataPoint> getAllByCreationTimeAndDay(@Param("creationTime") long creationTime, @Param("creationDate") Date creationDate);
 
 
 }

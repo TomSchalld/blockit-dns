@@ -39,5 +39,12 @@ public class UnboundController {
         log.trace("Service reloaded");
     }
 
+    @PostMapping("/stats/consolidation")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void consolidateStatistics() {
+        log.trace("Trying to consolidate statistics");
+        unboundService.consolidateStatistics();
+    }
+
 
 }

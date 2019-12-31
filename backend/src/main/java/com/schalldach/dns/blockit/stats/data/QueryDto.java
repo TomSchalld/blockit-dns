@@ -13,4 +13,5 @@ import java.util.Date;
 public class QueryDto {
     private Date point;
     private Long queries;
+    private String type;
 }

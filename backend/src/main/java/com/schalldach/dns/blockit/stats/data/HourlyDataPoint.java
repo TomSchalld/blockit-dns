@@ -27,8 +27,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "unbound_stats_data")
-public class DataPoint {
+@Table(name = "unbound_daily_stats_data")
+public class HourlyDataPoint {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +40,7 @@ public class DataPoint {
 
     @OneToMany(cascade = CascadeType.PERSIST, orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "unbound_stats_data_id")
-    private List<KeyValueStat> keyValueStats;
+    private List<HourlyKeyValueStat> keyValueStats;
 
     @Version
     private Long version;

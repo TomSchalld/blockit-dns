@@ -16,4 +16,6 @@ public interface UnboundService {
     void exportConfiguration(String configurationName);
 
     void reload();
+
+    void consolidateStatistics();
 }

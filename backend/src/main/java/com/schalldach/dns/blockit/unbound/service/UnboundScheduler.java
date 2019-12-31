@@ -20,6 +20,12 @@ public class UnboundScheduler {
         unboundService.updateStatistics();
     }
 
+    @Scheduled(cron = "${statistic.consilodation.cron}")
+    public void runStatisticsConsolidationJob() {
+        log.trace("Running Statistics consolidation Job");
+        unboundService.consolidateStatistics();
+    }
+
     @Scheduled(cron = "${healthcheck.refresh.cron}")
     public void runHealthCheckJob() {
         log.trace("Running Health check Job");

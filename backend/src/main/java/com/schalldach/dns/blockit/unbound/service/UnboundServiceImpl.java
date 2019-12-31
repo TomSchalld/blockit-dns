@@ -32,7 +32,7 @@ public class UnboundServiceImpl implements UnboundService {
 
     @Override
     public void updateStatistics() {
-        unboundStatistics.updateStatistics();
+        unboundStatistics.updateCurrentStatistics();
     }
 
     @PostConstruct
@@ -62,5 +62,10 @@ public class UnboundServiceImpl implements UnboundService {
         if (log.isTraceEnabled()) {
             result.forEach(log::trace);
         }
+    }
+
+    @Override
+    public void consolidateStatistics() {
+        unboundStatistics.consolidate();
     }
 }
