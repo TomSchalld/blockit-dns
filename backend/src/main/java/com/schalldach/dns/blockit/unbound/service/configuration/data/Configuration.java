@@ -32,8 +32,12 @@ public class Configuration {
     @Column
     private Long id;
 
+
     @Column(name = "configuration_name", unique = true, nullable = false)
     private String configurationName;
+
+    @Column(name = "active")
+    private boolean isActive;
 
     /**
      * The  number  of threads to create to serve clients. Use 1 for no
