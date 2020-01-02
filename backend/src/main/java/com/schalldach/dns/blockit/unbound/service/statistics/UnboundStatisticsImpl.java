@@ -71,9 +71,11 @@ public class UnboundStatisticsImpl implements UnboundStatistics {
                 .collect(Collectors.toMap(KeyValueStat::getKey, keyValueStat -> ((long) Double.parseDouble(keyValueStat.getValue())), Long::sum))
                 .forEach((s, aDouble) -> hourlyKeyValueStats.add(HourlyKeyValueStat.builder().dataPoint(hourlyStats).key(s)
                         .value(String.valueOf(aDouble)).build()));
+        log.debug("did consolidation, trying to save changes");
         dailyStatisticsRepo.save(hourlyStats);
-        keyValueStatRepo.deleteInBatch(lastHoursKeyValueStats);
-        statisticsRepo.deleteInBatch(statsFromLastHour);
+        log.debug("changes saved, trying to delete old key value stats");
+        lastHoursKeyValueStats.forEach(keyValueStat -> keyValueStatRepo.deleteById(keyValueStat.getId()));
+        log.debug("done, trying to do some cleanup");
         cleanupRemains();
     }
 
@@ -82,7 +84,7 @@ public class UnboundStatisticsImpl implements UnboundStatistics {
         final List<HourlyDataPoint> all = dailyStatisticsRepo.findAll().stream().filter(hourlyDataPoint -> hourlyDataPoint.getCreationDate().before(today)).collect(Collectors.toList());
         all.forEach(hourlyDataPoint -> dailyKeyValueStatRepo.deleteInBatch(hourlyDataPoint.getKeyValueStats()));
         dailyStatisticsRepo.deleteInBatch(all);
-        final Date lastHoursDateTime = DateUtils.addHours(DateUtils.truncate(new Date(), Calendar.HOUR), -1);
+        final Date lastHoursDateTime = DateUtils.truncate(new Date(), Calendar.HOUR);
         final List<DataPoint> collect = statisticsRepo.findAll().stream().filter(dataPoint -> dataPoint.getCreationDate().before(lastHoursDateTime)).collect(Collectors.toList());
         collect.forEach(dataPoint -> keyValueStatRepo.deleteInBatch(dataPoint.getKeyValueStats()));
         statisticsRepo.deleteInBatch(collect);
