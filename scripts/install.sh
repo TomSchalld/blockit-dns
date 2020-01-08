@@ -4,6 +4,10 @@ export CONF="/etc/unbound/unbound.conf.d/"
 export SERVER_CONF="server.conf"
 export CONTROL_CONF="remote.conf"
 export LOGGING_CONF="logging.conf"
+mkdir -p $HOME
+cd $HOME
+wget -q https://raw.githubusercontent.com/TomSchalld/blockit-dns/alpha-0.0.1/scripts/blockit.service
+wget -q https://github.com/TomSchalld/blockit-dns/releases/download/alpha-0.0.1/blockit.jar
 echo 'Updating packages'
 apt update && apt upgrade -y 
 echo 'Packages upgraded'
@@ -14,7 +18,7 @@ echo 'Installing Maria DB'
 apt install -y gnupg software-properties-common unbound mariadb-server 
 echo 'Maria DB install completed'
 echo 'Installing Amazon Cornetto <3'
-wget -O- https://apt.corretto.aws/corretto.key | sudo apt-key add - 
+wget -O- https://apt.corretto.aws/corretto.key | apt-key add - 
 add-apt-repository 'deb https://apt.corretto.aws stable main' 
 apt update && apt upgrade -y 
 apt install -y java-11-amazon-corretto-jdk 
@@ -39,7 +43,7 @@ chown unbound $HOME/blockit.jar
 chmod 755 $HOME/blockit.jar 
 cp $HOME/blockit.jar /usr/sbin/blockit.jar 
 cp $HOME/blockit.service /etc/systemd/system/blockit.service 
-sudo usermod -a -G systemd-journal unbound
+usermod -a -G systemd-journal unbound
 systemctl enable blockit 
 systemctl restart unbound 
 systemctl start blockit 
