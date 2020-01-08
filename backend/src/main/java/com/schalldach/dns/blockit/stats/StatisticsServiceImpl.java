@@ -1,5 +1,6 @@
 package com.schalldach.dns.blockit.stats;
 
+import com.schalldach.dns.blockit.logging.service.LogService;
 import com.schalldach.dns.blockit.stats.api.StatisticsService;
 import com.schalldach.dns.blockit.stats.data.DailyStatisticsRepo;
 import com.schalldach.dns.blockit.stats.data.HourlyKeyValueStat;
@@ -24,11 +25,19 @@ import java.util.stream.Collectors;
 @Slf4j
 public class StatisticsServiceImpl implements StatisticsService {
 
+    private static final String TOTAL_NUM_CACHEHITS = "total.num.cachehits";
+    private static final String TOTAL_NUM_CACHEMISS = "total.num.cachemiss";
+    private static final String TOTAL_NUM_QUERIES = "total.num.queries";
+    private static final String NUM_QUERIES = "num.queries";
+
     @Autowired
     private DailyStatisticsRepo dailyStatisticsRepo;
 
     @Autowired
     private StatisticsRepo statisticsRepo;
+
+    @Autowired
+    private LogService logService;
 
 
     @Override
@@ -39,7 +48,7 @@ public class StatisticsServiceImpl implements StatisticsService {
         final List<QueryDto> currentData = statisticsRepo.getAllByCreationTimeAndDay(hour, dateTime)
                 .stream()
                 .flatMap(dataPoint -> dataPoint.getKeyValueStats().stream())
-                .filter(keyValueStat -> keyValueStat.getKey().endsWith("num.queries"))
+                .filter(keyValueStat -> keyValueStat.getKey().endsWith(NUM_QUERIES))
                 .collect(Collectors.toMap(KeyValueStat::getKey, keyValueStat -> ((long) Double.parseDouble(keyValueStat.getValue())), Long::sum))
                 .entrySet()
                 .stream()
@@ -51,7 +60,7 @@ public class StatisticsServiceImpl implements StatisticsService {
                 .map(dataPoint -> dataPoint.
                         getKeyValueStats()
                         .stream()
-                        .filter(keyValueStat -> keyValueStat.getKey().endsWith("num.queries"))
+                        .filter(keyValueStat -> keyValueStat.getKey().endsWith(NUM_QUERIES))
                         .map(hourlyKeyValueStat -> new QueryDto(dataPoint.getCreationDate(), Long.valueOf(hourlyKeyValueStat.getValue()), hourlyKeyValueStat.getKey())))
                 .flatMap(queryDtoStream -> queryDtoStream)
                 .collect(Collectors.toList()));
@@ -62,23 +71,43 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     @Override
     public Long getDailyQueryCount() {
+        return getStatisticsValue(TOTAL_NUM_QUERIES);
+    }
+
+    private Long getStatisticsValue(String s) {
         final Date date = new Date();
         final Date dateTime = DateUtils.truncate(date, Calendar.DATE);
         final long hour = DateUtils.getFragmentInHours(date, Calendar.DATE);
+        final String statisticsKey = s;
         return statisticsRepo.getAllByCreationTimeAndDay(hour, dateTime)
                 .stream()
                 .flatMap(hourlyDataPoint -> hourlyDataPoint.getKeyValueStats().stream())
-                .filter(keyValueStat -> keyValueStat.getKey().equals("total.num.queries"))
+                .filter(keyValueStat -> keyValueStat.getKey().equals(statisticsKey))
                 .map(KeyValueStat::getValue)
                 .map(Long::valueOf)
                 .reduce(0L, Long::sum)
                 + dailyStatisticsRepo.findAll()
                 .stream()
                 .flatMap(hourlyDataPoint -> hourlyDataPoint.getKeyValueStats().stream())
-                .filter(keyValueStat -> keyValueStat.getKey().equals("total.num.queries"))
+                .filter(keyValueStat -> keyValueStat.getKey().equals(statisticsKey))
                 .map(HourlyKeyValueStat::getValue)
                 .map(Long::valueOf)
                 .reduce(0L, Long::sum);
+    }
+
+    @Override
+    public Double getDailyAverageResponseTime() {
+        return logService.getAverageQueryTime();
+    }
+
+    @Override
+    public Long getDailyCacheHits() {
+        return getStatisticsValue(TOTAL_NUM_CACHEHITS);
+    }
+
+    @Override
+    public Long getDailyCacheMisses() {
+        return getStatisticsValue(TOTAL_NUM_CACHEMISS);
     }
 
 

@@ -15,4 +15,6 @@ public interface LogService {
     long getRefusedCount();
 
     long getRepliesCount();
+
+    double getAverageQueryTime();
 }

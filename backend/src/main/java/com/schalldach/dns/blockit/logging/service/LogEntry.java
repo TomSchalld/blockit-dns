@@ -4,6 +4,8 @@ package com.schalldach.dns.blockit.logging.service;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.Objects;
+
 /**
  * Created by @author Thomas Schalldach on 01/01/2020 software@thomas-schalldach.de.
  */
@@ -28,5 +30,21 @@ public class LogEntry {
         this.time = Double.parseDouble(logEntries[5]);
         this.messageSize = Integer.parseInt(logEntries[7]);
         this.suspicious = this.queryAddress.matches(AD_REGEX);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LogEntry logEntry = (LogEntry) o;
+        return suspicious == logEntry.suspicious &&
+                queryAddress.equals(logEntry.queryAddress) &&
+                record.equals(logEntry.record) &&
+                status.equals(logEntry.status);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(queryAddress, record, status, suspicious);
     }
 }

@@ -37,6 +37,20 @@ public class StatsController {
         return new ResponseEntity<>(statisticsService.getDailyQueries(), HttpStatus.OK);
     }
 
+    @GetMapping("/queries/cache/hits")
+    public ResponseEntity<Long> getDailyCacheHits() {
+        return new ResponseEntity<>(statisticsService.getDailyCacheHits(), HttpStatus.OK);
+    }
+    @GetMapping("/queries/cache/misses")
+    public ResponseEntity<Long> getDailyCacheMisses() {
+        return new ResponseEntity<>(statisticsService.getDailyCacheMisses(), HttpStatus.OK);
+    }
+
+    @GetMapping("/queries/time")
+    public ResponseEntity<Double> getDailyAverageResponseTime() {
+        return new ResponseEntity<>(statisticsService.getDailyAverageResponseTime(), HttpStatus.OK);
+    }
+
     @GetMapping("/queries/daily/count")
     public ResponseEntity<Long> getDailyCount() {
         return new ResponseEntity<>(statisticsService.getDailyQueryCount(), HttpStatus.OK);

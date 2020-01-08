@@ -1,6 +1,8 @@
-package com.schalldach.dns.blockit.logging.service;
+package com.schalldach.dns.blockit.unbound.service.logging;
 
 import com.schalldach.dns.blockit.logging.service.LogAware.Log;
+import com.schalldach.dns.blockit.logging.service.LogEntry;
+import com.schalldach.dns.blockit.logging.service.LogService;
 import com.schalldach.dns.blockit.unbound.UnboundContext;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +44,16 @@ public class LogServiceImpl implements LogService {
     @Override
     public long getRepliesCount() {
         return getReplies().stream().filter(s -> s.contains(NO_ERROR)).count();
+    }
+
+    @Override
+    public double getAverageQueryTime() {
+        return getReplies().stream()
+                .map(s -> s.split(" "))
+                .map(LogEntry::new)
+                .map(LogEntry::getTime)
+                .collect(Collectors.averagingDouble(aDouble -> aDouble));
+
     }
 
     private Collection<String> getReplies() {

@@ -13,4 +13,10 @@ public interface StatisticsService {
     List<QueryDto> getDailyQueries();
 
     Long getDailyQueryCount();
+
+    Double getDailyAverageResponseTime();
+
+    Long getDailyCacheHits();
+
+    Long getDailyCacheMisses();
 }

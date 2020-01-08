@@ -24,7 +24,7 @@ public interface LogAware {
             return log.stream()
                     .map(s -> s.split(" "))
                     .map(LogEntry::new)
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toSet());
 
         }
     }
